@@ -1,8 +1,26 @@
 #!/usr/bin/python
 
-#This function will take a cubefile and return a dictionary that contains all
+#--------------------------------------------------------------
+#This will take a cubefile and return a dictionary that contains all
 #of the information in the header. This includes voxel positions and atomic 
 #coordinates. 
+#
+# E.g. import Cube_header
+# header_example=Cube_header.header_Read(name_of_cube_file)
+#
+#This will return a nested dictionary
+#The first level keys are 'voxel_info' and 'atom_info'
+#The second level keys for voxel_info are ['origin','voxel_x','voxel_y','voxel_z]
+#'origin' as '_dummy' as its third level key (acts as a placeholder)
+#'voxel_x' has 'num_voxels' and 'voxel_step_sizes' as its third level keys
+#
+#'atom_info' has 'tot_atom_num' as a second level key with the third level key
+#being '_dummy'
+#'atoms' is also a second level key with the corresponding third level keys
+#being the atomic numbers. The values for each atomic numbers is a list of 
+#tuples containing the coordinates of the atom
+#--------------------------------------------------------------
+
 
 #Import the Autovivify module from this directory to create the data structure
 import Autovivify 
