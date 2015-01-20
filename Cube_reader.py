@@ -5,8 +5,8 @@
 #of the information in the header. This includes voxel positions and atomic 
 #coordinates. 
 #
-# E.g. import Cube_header
-# header_example=Cube_header.header_Read(name_of_cube_file)
+# E.g. import Cube_reader
+# header_example=Cube_reader.header_Read(name_of_cube_file)
 #
 #This will return a nested dictionary
 #The first level keys are 'voxel_info' and 'atom_info'
@@ -24,6 +24,7 @@
 
 #Import the Autovivify module from this directory to create the data structure
 import Autovivify 
+import numpy as np
 
 def header_Read(input_cube_file):
     
@@ -74,7 +75,7 @@ def header_Read(input_cube_file):
         elif line_count==6:
             line_split=line.split()
             #Add total number of voxels in x into dictionary
-            header_info['voxel_info']['voxel_z']['num_voxels'].append(line_split[0])
+            header_info['voxel_info']['voxel_z']['num_voxels'].append(float(line_split[0]))
             #Add the step sizes in each direction into the dictionary
             #Need to convert string to float
             vox_step_sizes=(float(line_split[1]),float(line_split[2]),float(line_split[3]))            
@@ -101,6 +102,50 @@ def header_Read(input_cube_file):
     cube_file.close()
 
     return header_info
+
+
+#Read the cube file into a 1-D numpy array
+def cube_Read(input_cube_file,header_info):
+
+    #Get the number of atoms in the system 
+    num_atoms=header_info['atom_info']['tot_atom_num']['_dummy'][0]
+    #Get the number of voxels in the X direction 
+    num_X=header_info['voxel_info']['voxel_x']['num_voxels'][0]
+    #Get the number of voxels in the Y direction
+    num_Y=header_info['voxel_info']['voxel_y']['num_voxels'][0]
+    #Get the number of voxels in the Z direction
+    num_Z=header_info['voxel_info']['voxel_z']['num_voxels'][0]
+    #Get the total number of points
+    tot_points=int(num_X*num_Y*num_Z)
+    #Initialize a numpy array of proper size 
+    density_array=np.zeros(tot_points)
+    #Initialize a counter for the array
+    index=0
+
+    #Open the cube file
+    cube_file=open(input_cube_file,'r')
+
+    #Skip the header 
+    for _ in range(int(num_atoms+7)):
+        next(cube_file)
+
+    #Loop over the rest of the cube file 
+    for line in cube_file:
+        #Split the line to get a list of density values
+        density_vals=line.split()
+        #Put the values into the numpy array
+        for value in density_vals:
+            #Put value into array 
+            density_array[index]=value
+            #Increment index
+            index+=1
+
+    #Close the cube file
+    cube_file.close()
+    
+    #Return the array
+    return density_array
+
 
 
 
