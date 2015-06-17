@@ -71,8 +71,6 @@ def write_config(keywords,files):
 
 if __name__=="__main__":
 
-    g09_input='input_3.gjf'
-
     keywords_list=[]
     file_list=[]
 
