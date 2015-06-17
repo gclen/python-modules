@@ -35,11 +35,14 @@ def parse_route_section(gaussian_input_file,keywords):
                 if 'SCRF=' in option:
                     keyword_split=option.split('=')
                     keywords.append(keyword_split[-1].rstrip(')'))
+                #Check for population analysis
                 if 'pop=' in option: 
                     keyword_split=option.split('=')
                     keywords.append('Population analysis')    
+                #Check for TDDFT 
                 if ('td(' or 'td=') in option:
                     keywords.append('TD-DFT')
+                #Check for frequency of calclations
                 if 'freq' in option:
                     keywords.append('Frequency')
         #For per atom basis sets, the name is in the line previous to ****
@@ -69,7 +72,7 @@ def write_config(keywords,files):
 
     config_file.close()
 
-if __name__=="__main__":
+def run():
 
     keywords_list=[]
     file_list=[]
@@ -83,7 +86,7 @@ if __name__=="__main__":
     
     write_config(keywords_list,file_list)    
     
-
+run()
 
 
 
