@@ -1,5 +1,7 @@
 #!/usr/bin/python
 
+import glob
+
 def parse_route_section(gaussian_input_file,keywords):
 
     prev_line=''
@@ -48,14 +50,42 @@ def parse_route_section(gaussian_input_file,keywords):
 
     return keywords
 
+def write_config(keywords,files):
+
+    config_file=open('addConfig.txt','w')
+
+    config_file.write('Description\n\n')
+    config_file.write('Keywords\n')
+    
+    for keyword in keywords:
+        config_file.write('    '+keyword+'\n')
+    
+    config_file.write('\ninputfiles\n')
+    
+    for file_name in files:
+        config_file.write('    '+file_name+'\n')
+    
+    config_file.write('\noutputfiles\n')
+
+    config_file.close()
+
 if __name__=="__main__":
 
     g09_input='input_3.gjf'
 
-    keywords=[]
+    keywords_list=[]
+    file_list=[]
 
-    keywords=parse_route_section(g09_input,keywords)
+    for g09_input in glob.glob("*.gjf"):
+        keywords_list=parse_route_section(g09_input,keywords_list)
+        file_list.append(g09_input)
+    
+    #Remove duplicate keywords
+    keywords_list=list(set(keywords_list))
+    
+    write_config(keywords_list,file_list)    
+    
 
-    print keywords
+
 
 
