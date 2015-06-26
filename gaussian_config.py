@@ -1,6 +1,7 @@
 #!/usr/bin/python
 
 import glob
+from StringIO import StringIO
 
 def parse_route_section(gaussian_input_file,keywords):
 
@@ -54,8 +55,7 @@ def parse_route_section(gaussian_input_file,keywords):
     return keywords
 
 def write_config(keywords,files):
-
-    config_file=open('addConfig.txt','w')
+    config_file = StringIO()
 
     config_file.write('Description\n\n')
     config_file.write('Keywords\n')
@@ -67,13 +67,10 @@ def write_config(keywords,files):
     
     for file_name in files:
         config_file.write('    '+file_name+'\n')
-    
-    config_file.write('\noutputfiles\n')
 
-    config_file.close()
+    return config_file.getvalue()
 
 def run():
-
     keywords_list=[]
     file_list=[]
 
@@ -84,9 +81,7 @@ def run():
     #Remove duplicate keywords
     keywords_list=list(set(keywords_list))
     
-    write_config(keywords_list,file_list)    
-    
-run()
+    return write_config(keywords_list,file_list)
 
-
-
+if __name__=="__main__":    
+    run()
